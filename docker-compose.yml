@@ -5,14 +5,13 @@ services:
     container_name: broker
     ports:
       - 9092:9092
-      - 29092:29092
     volumes: 
       - ./secrets:/etc/kafka/secrets # secrets folder to ssl mode
       - ./cfg/single-node:/mnt/shared/config # config folder to store default 
     environment: # overrided config opts can be listed below as env variables
       CLUSTER_ID: 'V_mKxnMhQyyp14y-Z0zFfQ' # unique broker id
-      KAFKA_NODE_ID: 5
-      KAFKA_BROKER_ID: 5
+      KAFKA_NODE_ID: 5 # just for example
+      KAFKA_BROKER_ID: 5 # must be equal node.id
 
       KAFKA_LISTENERS: 'CONTROLLER://:29093,PLAINTEXT_HOST://:9092,PLAINTEXT://:19092,EXTERNAL://:9094'
       KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092,EXTERNAL://broker:9094' # addresses for external apps to connect to kafka
