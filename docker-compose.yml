@@ -8,6 +8,7 @@ services:
     volumes: 
       - ./secrets:/etc/kafka/secrets # secrets folder to ssl mode
       - ./cfg/single-node:/mnt/shared/config # config folder to store default 
+      - ./storage:/tmp/kraft-combined-logs
     environment: # overrided config opts can be listed below as env variables
       CLUSTER_ID: 'V_mKxnMhQyyp14y-Z0zFfQ' # unique broker id
       KAFKA_NODE_ID: 5 # just for example
