@@ -6,8 +6,8 @@ services:
     ports:
       - 9092:9092
     volumes: 
-      - ./secrets:/etc/kafka/secrets # secrets folder to ssl mode
-      - ./cfg/single-node:/mnt/shared/config # config folder to store default 
+      - ../../secrets:/etc/kafka/secrets # secrets folder to ssl mode
+      - ./:/mnt/shared/config # config folder to store default 
       - ./storage:/tmp/kraft-combined-logs
     environment: # overrided config opts can be listed below as env variables
       CLUSTER_ID: 'V_mKxnMhQyyp14y-Z0zFfQ' # unique broker id
@@ -31,4 +31,4 @@ services:
       KAFKA_CLUSTERS_0_NAME: SingleNodeCluster
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: 'broker:9094'
     volumes:
-      - ./kafka-ui/config.yml:/etc/kafkaui/dynamic_config.yaml
+      - ../../kafka-ui/config.yml:/etc/kafkaui/dynamic_config.yaml

@@ -1,0 +1,90 @@
+services:
+  x-controller: &x-controller # controller container
+    image: apache/kafka:latest
+    volumes: 
+      - ../../secrets:/etc/kafka/secrets # secrets folder to ssl mode
+      - ./controller:/mnt/shared/config # config folder to store default 
+    environment: &x-controller-env 
+      KAFKA_LOG_DIRS: "/tmp/kraft-combined-logs"
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      KAFKA_LISTENERS: 'CONTROLLER://:9093'
+
+
+  controller-1: 
+    <<: *x-controller
+    environment: 
+      <<: *x-controller-env
+      KAFKA_NODE_ID: 1
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@controller-1:9093,2@controller-2:9093,3@controller-3:9093"
+
+  controller-2: 
+    <<: *x-controller
+    environment: 
+      <<: *x-controller-env
+      KAFKA_NODE_ID: 2
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@controller-1:9093,2@controller-2:9093,3@controller-3:9093"
+
+  controller-3: 
+    <<: *x-controller
+    environment: 
+      <<: *x-controller-env
+      KAFKA_NODE_ID: 3
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@controller-1:9093,2@controller-2:9093,3@controller-3:9093"
+
+  x-kafka: &x-kafka
+    image: apache/kafka:latest
+    volumes: 
+      - ../../secrets:/etc/kafka/secrets # secrets folder to ssl mode
+      - ./broker:/mnt/shared/config # config folder to store default 
+    environment: &x-kafka-env
+      KAFKA_LOG_DIRS: "/tmp/kraft-combined-logs"
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@controller-1:9093,2@controller-2:9093,3@controller-3:9093"
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+    depends_on:
+      - controller-1
+      - controller-2
+      - controller-3
+
+  kafka-1:
+    <<: *x-kafka
+    ports:
+      - 29092:29092
+    environment:
+      <<: *x-kafka-env
+      KAFKA_NODE_ID: 4
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka-1:19092,PLAINTEXT_HOST://localhost:29092,EXTERNAL://kafka-1:9094"
+
+  kafka-2:
+    <<: *x-kafka
+    ports:
+      - 39092:39092
+    environment:
+      <<: *x-kafka-env
+      KAFKA_NODE_ID: 5
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka-2:19092,PLAINTEXT_HOST://localhost:39092,EXTERNAL://kafka-2:9094"
+
+  kafka-3:
+    <<: *x-kafka
+    ports:
+      - 49092:49092
+    environment:
+      <<: *x-kafka-env
+      KAFKA_NODE_ID: 6
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka-3:19092,PLAINTEXT_HOST://localhost:49092,EXTERNAL://kafka-3:9094"
+
+  kafka-ui:
+    container_name: kafka-ui
+    image: provectuslabs/kafka-ui:master
+    ports:
+      - 8080:8080
+    environment:
+      DYNAMIC_CONFIG_ENABLED: 'true'
+      KAFKA_CLUSTERS_0_NAME: MultiNodeCluster
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: 'kafka-1:9094,kafka-2:9094,kafka-3:9094'
+    volumes:
+      - ../../kafka-ui/config.yml:/etc/kafkaui/dynamic_config.yaml
+    depends_on:
+      - kafka-1
+      - kafka-2
+      - kafka-3
+

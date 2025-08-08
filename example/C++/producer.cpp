@@ -13,7 +13,8 @@ int main(int argc, char * argw[]) {
 	using namespace kafka;
 	using namespace kafka::clients::producer;
 	kafka::Properties props;
-	props.put("bootstrap.servers", globals::brokers);
+	// props.put("bootstrap.servers", globals::brokers);
+	props.put("bootstrap.servers", globals::cluster_brokers);
 	props.put("enable.idempotence", "true");
 	
 	KafkaProducer producer(props);

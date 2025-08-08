@@ -7,7 +7,8 @@ async def sample_produce(producer: AIOKafkaProducer, key="some", value="none"):
     print(result)
 
 async def main():
-    producer = AIOKafkaProducer(bootstrap_servers=BOOTSTRAP_SERVERS, key_serializer=lambda x: x.encode(), value_serializer=lambda x: x.encode())
+    # producer = AIOKafkaProducer(bootstrap_servers=BOOTSTRAP_SERVERS, key_serializer=lambda x: x.encode(), value_serializer=lambda x: x.encode())
+    producer = AIOKafkaProducer(bootstrap_servers=CLUSTER_BOOTSTRAP_SERVERS, key_serializer=lambda x: x.encode(), value_serializer=lambda x: x.encode())
     await producer.start()
     try:
         while True:

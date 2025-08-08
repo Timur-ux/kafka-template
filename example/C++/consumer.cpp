@@ -24,7 +24,9 @@ int main(int argc, char *argw[]) {
   using namespace kafka;
   using namespace kafka::clients::consumer;
   kafka::Properties props;
-  props.put("bootstrap.servers", globals::brokers);
+  // props.put("bootstrap.servers", globals::brokers);
+  props.put("bootstrap.servers", globals::cluster_brokers);
+  props.put("group.id", "cpp_group!");
   props.put("auto.offset.reset", "earliest");
 
   signal(SIGINT, stopRunning);

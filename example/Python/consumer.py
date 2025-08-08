@@ -1,7 +1,7 @@
 import asyncio
 from aiokafka import AIOKafkaConsumer
 
-from globals import BOOTSTRAP_SERVERS, TOPIC_NAME
+from globals import *
 
 
 async def fetch_batch(consumer: AIOKafkaConsumer):
@@ -13,7 +13,8 @@ async def fetch_batch(consumer: AIOKafkaConsumer):
 
 
 async def fetch_loop():
-    consumer = AIOKafkaConsumer(TOPIC_NAME, bootstrap_servers=BOOTSTRAP_SERVERS, group_id="foobar", auto_offset_reset="earliest")
+    # consumer = AIOKafkaConsumer(TOPIC_NAME, bootstrap_servers=BOOTSTRAP_SERVERS, group_id="foobar", auto_offset_reset="earliest")
+    consumer = AIOKafkaConsumer(TOPIC_NAME, bootstrap_servers=CLUSTER_BOOTSTRAP_SERVERS, group_id="foobar", auto_offset_reset="earliest")
     await consumer.start()
     try:
         while True:
